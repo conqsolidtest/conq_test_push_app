@@ -1,4 +1,4 @@
-package com.example.conq_test_push_app
+package com.conqsolidtest.conq_test_push_app
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
