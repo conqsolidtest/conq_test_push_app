@@ -14,14 +14,11 @@ class ApiUtilities {
     if (response.isNotEmpty) {
       final jsonResponse = json.decode(response);
 
-      var imageResponse;
-      var imageData;
       var informationDto;
       if (jsonResponse != null) {
         for (var i = 0; i < 5; i++) {
-          jsonResponse.forEach((inf) async {
+          jsonResponse.forEach((inf) {
             informationDto = InformationDto.fromJson(inf);
-            //imageData = json.decode(imageResponse);
             informations.add(informationDto);
           });
         }

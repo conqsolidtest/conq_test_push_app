@@ -75,79 +75,167 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: FutureBuilder(
-          future: _informationListFuture,
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.active:
-              case ConnectionState.waiting:
-                return CircularProgressIndicatorControl();
-                break;
-              case ConnectionState.done:
-                if (snapshot.hasError) {
-                  return Text(snapshot.error);
-                } else {
-                  return RefreshIndicator(
-                    backgroundColor: Colors.white,
-                    color: Colors.red,
-                    onRefresh: () async {
-                      setState(() {
-                        _informationListFuture = ApiUtilities.getInformations();
-                      });
-                    },
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext ctx, int index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Material(
-                                child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => InformationDetail(
-                                      informationDto: InformationDto(
-                                          title: snapshot.data[index].title,
-                                          body: snapshot.data[index].body),
+      body: Stack(
+        children: <Widget>[
+          FutureBuilder(
+            future: _informationListFuture,
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.active:
+                case ConnectionState.waiting:
+                  return CircularProgressIndicatorControl();
+                  break;
+                case ConnectionState.done:
+                  if (snapshot.hasError) {
+                    return Text(snapshot.error);
+                  } else {
+                    return RefreshIndicator(
+                      backgroundColor: Colors.white,
+                      color: Colors.red,
+                      onRefresh: () async {
+                        setState(() {
+                          _informationListFuture =
+                              ApiUtilities.getInformations();
+                        });
+                      },
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext ctx, int index) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 10.0, left: 10.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Container(
+                                    height: 300,
+                                    child: Stack(
+                                      children: <Widget>[
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10),
+                                                topRight: Radius.circular(10)),
+                                            color: Colors.green,
+                                            image: DecorationImage(
+                                              colorFilter: new ColorFilter.mode(
+                                                  Colors.black.withOpacity(1),
+                                                  BlendMode.dstATop),
+                                              fit: BoxFit.fill,
+                                              image: AssetImage(
+                                                  "assets/images/image.jpg"),
+                                            ),
+                                          ),
+                                          height: 210,
+                                          width: 200,
+                                        ),
+                                        Positioned(
+                                          bottom: 0,
+                                          left: 0,
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      InformationDetail(
+                                                    informationDto:
+                                                        InformationDto(
+                                                            title: snapshot
+                                                                .data[index]
+                                                                .title,
+                                                            body: snapshot
+                                                                .data[index]
+                                                                .body),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              width: 200,
+                                              height: 100,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Color(0xffefefef)),
+                                              child: Center(
+                                                child: Text(
+                                                  snapshot.data[index].title,
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black54),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                            top: 175,
+                                            right: 10,
+                                            child: Container(
+                                              height: 50,
+                                              width: 50,
+                                              decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        blurRadius: 0,
+                                                        color: Colors.blueGrey)
+                                                  ],
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.white),
+                                              child: Icon(
+                                                Icons.bookmark_border,
+                                                size: 25,
+                                                color: Colors.orange.shade400,
+                                              ),
+                                            )),
+                                      ],
                                     ),
                                   ),
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      colorFilter: new ColorFilter.mode(
-                                          Colors.black.withOpacity(1),
-                                          BlendMode.dstATop),
-                                      fit: BoxFit.fill,
-                                      image: NetworkImage(
-                                          snapshot.data[index].imageUrl)),
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                height: 300,
-                                width: 200,
-                                child: Center(
-                                  child: Text(
-                                    snapshot.data[index].title,
-                                    style: TextStyle(
-                                        fontSize: 1,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black54),
-                                  ),
-                                ),
+                                ],
                               ),
-                            )),
-                          );
-                        }),
-                  );
-                }
-                break;
-              default:
-                return CircularProgressIndicatorControl();
-            }
-          }),
+                            );
+                          }),
+                    );
+                  }
+                  break;
+                default:
+                  return CircularProgressIndicatorControl();
+              }
+            },
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            left: 0,
+            child: Container(
+              color: Colors.orange.shade400,
+              child: SizedBox(
+                height: 75,
+                child: Center(
+                  child: InkWell(
+                    onTap: () {
+                      print("Book Now pressed");
+                    },
+                    child: SizedBox(
+                      height: double.infinity,
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Book now',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
