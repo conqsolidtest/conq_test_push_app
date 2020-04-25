@@ -69,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -76,135 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Stack(
+        fit: StackFit.expand,
         children: <Widget>[
-          FutureBuilder(
-            future: _informationListFuture,
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.active:
-                case ConnectionState.waiting:
-                  return CircularProgressIndicatorControl();
-                  break;
-                case ConnectionState.done:
-                  if (snapshot.hasError) {
-                    return Text(snapshot.error);
-                  } else {
-                    return RefreshIndicator(
-                      backgroundColor: Colors.white,
-                      color: Colors.red,
-                      onRefresh: () async {
-                        setState(() {
-                          _informationListFuture =
-                              ApiUtilities.getInformations();
-                        });
-                      },
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext ctx, int index) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 10.0, left: 10.0),
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    height: 300,
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(10),
-                                                topRight: Radius.circular(10)),
-                                            color: Colors.green,
-                                            image: DecorationImage(
-                                              colorFilter: new ColorFilter.mode(
-                                                  Colors.black.withOpacity(1),
-                                                  BlendMode.dstATop),
-                                              fit: BoxFit.fill,
-                                              image: AssetImage(
-                                                  "assets/images/image.jpg"),
-                                            ),
-                                          ),
-                                          height: 210,
-                                          width: 200,
-                                        ),
-                                        Positioned(
-                                          bottom: 0,
-                                          left: 0,
-                                          child: InkWell(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      InformationDetail(
-                                                    informationDto:
-                                                        InformationDto(
-                                                            title: snapshot
-                                                                .data[index]
-                                                                .title,
-                                                            body: snapshot
-                                                                .data[index]
-                                                                .body),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            child: Container(
-                                              width: 200,
-                                              height: 100,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  color: Color(0xffefefef)),
-                                              child: Center(
-                                                child: Text(
-                                                  snapshot.data[index].title,
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.black54),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                            top: 175,
-                                            right: 10,
-                                            child: Container(
-                                              height: 50,
-                                              width: 50,
-                                              decoration: BoxDecoration(
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                        blurRadius: 0,
-                                                        color: Colors.blueGrey)
-                                                  ],
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.white),
-                                              child: Icon(
-                                                Icons.bookmark_border,
-                                                size: 25,
-                                                color: Colors.orange.shade400,
-                                              ),
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }),
-                    );
-                  }
-                  break;
-                default:
-                  return CircularProgressIndicatorControl();
-              }
-            },
+          Container(
+            height: 100,
+            child: _getTravelDestinations(_informationListFuture),
           ),
           Positioned(
             bottom: 0,
@@ -220,8 +97,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       print("Book Now pressed");
                     },
                     child: SizedBox(
-                      height: double.infinity,
-                      width: double.infinity,
                       child: Center(
                         child: Text(
                           'Book now',
@@ -239,4 +114,129 @@ class _MyHomePageState extends State<MyHomePage> {
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+}
+
+Widget _getTravelDestinations(
+    Future<List<InformationDto>> _informationListFuture) {
+  return FutureBuilder(
+    future: _informationListFuture,
+    builder: (context, snapshot) {
+      switch (snapshot.connectionState) {
+        case ConnectionState.active:
+        case ConnectionState.waiting:
+          return CircularProgressIndicatorControl();
+          break;
+        case ConnectionState.done:
+          if (snapshot.hasError) {
+            return Text(snapshot.error);
+          } else {
+            return Row(
+              children: <Widget>[
+                ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (BuildContext ctx, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          top: 10.0, left: 10.0, right: 10),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            height: 300,
+                            child: Stack(
+                              children: <Widget>[
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10),
+                                    ),
+                                    image: DecorationImage(
+                                      colorFilter: new ColorFilter.mode(
+                                          Colors.black.withOpacity(0.5),
+                                          BlendMode.dstATop),
+                                      fit: BoxFit.fill,
+                                      image:
+                                          AssetImage("assets/images/image.jpg"),
+                                    ),
+                                  ),
+                                  height: 210,
+                                  width: 200,
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              InformationDetail(
+                                            informationDto: InformationDto(
+                                                title:
+                                                    snapshot.data[index].title,
+                                                body:
+                                                    snapshot.data[index].body),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 200,
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Color(0xffefefef)),
+                                      child: Center(
+                                        child: Text(
+                                          snapshot.data[index].title,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black54),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 175,
+                                  right: 10,
+                                  child: Container(
+                                    height: 50,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                              blurRadius: 0,
+                                              color: Colors.blueGrey)
+                                        ],
+                                        shape: BoxShape.circle,
+                                        color: Colors.white),
+                                    child: Icon(
+                                      Icons.bookmark_border,
+                                      size: 25,
+                                      color: Colors.orange.shade400,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
+          }
+          break;
+        default:
+          return CircularProgressIndicatorControl();
+      }
+    },
+  );
 }
