@@ -1,10 +1,8 @@
-import 'dart:math';
-
 import 'package:conq_test_push_app/usercontrol/CircularProgressIndicatorControl.dart';
 import 'package:conq_test_push_app/utilities/ApiUtilities.dart';
 import 'package:conq_test_push_app/utilities/information_detail.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 
 import 'dto/information_dto.dart';
 
@@ -95,12 +93,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     onTap: () {
                       print("Book Now pressed");
                     },
-                    child: SizedBox(
-                      child: Center(
-                        child: Text(
-                          'Book now',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                    child: Center(
+                      child: Text(
+                        'Book now',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -117,75 +113,71 @@ class _MyHomePageState extends State<MyHomePage> {
 
 Widget _getSingleInformationItem(
     InformationDto informationDto, BuildContext context) {
-  return SizedBox(
-    height: 200,
-    width: 200,
-    child: Container(
-      color: Colors.amber,
-      child: Stack(
-        fit: StackFit.loose,
-        children: [
-          Column(
-            children: <Widget>[
-              Image(
-                image: AssetImage(
-                  "assets/images/nature/${informationDto.imageUrl}",
-                ),
-                height: 200,
-                width: 200,
-                fit: BoxFit.fill,
+  return Container(
+    color: Colors.blueGrey,
+    child: Stack(
+      fit: StackFit.loose,
+      children: [
+        Column(
+          children: <Widget>[
+            Image(
+              image: AssetImage(
+                "assets/images/nature/${informationDto.imageUrl}",
               ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => InformationDetail(
-                        informationDto: InformationDto(
-                            title: informationDto.title,
-                            body: informationDto.body),
-                      ),
+              height: 200,
+              width: 200,
+              fit: BoxFit.fill,
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => InformationDetail(
+                      informationDto: InformationDto(
+                          title: informationDto.title,
+                          body: informationDto.body),
                     ),
-                  );
-                },
-                child: Container(
-                  width: 200,
-                  height: 100,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Color(0xffefefef)),
-                  child: Center(
-                    child: Text(
-                      informationDto.title,
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54),
-                    ),
+                  ),
+                );
+              },
+              child: Container(
+                width: 200,
+                height: 100,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Color(0xffefefef)),
+                child: Center(
+                  child: Text(
+                    informationDto.title,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54),
                   ),
                 ),
               ),
-            ],
-          ),
-          Positioned(
-            top: 175,
-            right: 25,
-            child: Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                  boxShadow: [BoxShadow(blurRadius: 0, color: Colors.blueGrey)],
-                  shape: BoxShape.circle,
-                  color: Colors.white),
-              child: Icon(
-                Icons.bookmark_border,
-                size: 25,
-                color: Colors.orange.shade400,
-              ),
+            ),
+          ],
+        ),
+        Positioned(
+          top: 175,
+          right: 25,
+          child: Container(
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+                boxShadow: [BoxShadow(blurRadius: 0, color: Colors.black12)],
+                shape: BoxShape.circle,
+                color: Colors.white),
+            child: Icon(
+              Icons.bookmark_border,
+              size: 25,
+              color: Colors.orange.shade400,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }
