@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:conq_test_push_app/usercontrol/CircularProgressIndicatorControl.dart';
 import 'package:conq_test_push_app/utilities/ApiUtilities.dart';
 import 'package:conq_test_push_app/utilities/information_detail.dart';
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Nature App'),
     );
   }
 }
@@ -79,14 +81,11 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          Container(
-            height: 100,
-            child: _getTravelDestinations(_informationListFuture),
-          ),
+          _getTravelDestinations(_informationListFuture),
           Positioned(
             bottom: 0,
-            right: 0,
             left: 0,
+            right: 0,
             child: Container(
               color: Colors.orange.shade400,
               child: SizedBox(
@@ -116,6 +115,81 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+Widget _getSingleInformationItem(
+    InformationDto informationDto, BuildContext context) {
+  return SizedBox(
+    height: 200,
+    width: 200,
+    child: Container(
+      color: Colors.amber,
+      child: Stack(
+        fit: StackFit.loose,
+        children: [
+          Column(
+            children: <Widget>[
+              Image(
+                image: AssetImage(
+                  "assets/images/nature/${informationDto.imageUrl}",
+                ),
+                height: 200,
+                width: 200,
+                fit: BoxFit.fill,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InformationDetail(
+                        informationDto: InformationDto(
+                            title: informationDto.title,
+                            body: informationDto.body),
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 200,
+                  height: 100,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Color(0xffefefef)),
+                  child: Center(
+                    child: Text(
+                      informationDto.title,
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            top: 175,
+            right: 25,
+            child: Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                  boxShadow: [BoxShadow(blurRadius: 0, color: Colors.blueGrey)],
+                  shape: BoxShape.circle,
+                  color: Colors.white),
+              child: Icon(
+                Icons.bookmark_border,
+                size: 25,
+                color: Colors.orange.shade400,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 Widget _getTravelDestinations(
     Future<List<InformationDto>> _informationListFuture) {
   return FutureBuilder(
@@ -130,108 +204,17 @@ Widget _getTravelDestinations(
           if (snapshot.hasError) {
             return Text(snapshot.error);
           } else {
-            return Row(
-              children: <Widget>[
-                ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext ctx, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                          top: 10.0, left: 10.0, right: 10),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            height: 300,
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(10),
-                                      topRight: Radius.circular(10),
-                                    ),
-                                    image: DecorationImage(
-                                      colorFilter: new ColorFilter.mode(
-                                          Colors.black.withOpacity(0.5),
-                                          BlendMode.dstATop),
-                                      fit: BoxFit.fill,
-                                      image:
-                                          AssetImage("assets/images/image.jpg"),
-                                    ),
-                                  ),
-                                  height: 210,
-                                  width: 200,
-                                ),
-                                Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              InformationDetail(
-                                            informationDto: InformationDto(
-                                                title:
-                                                    snapshot.data[index].title,
-                                                body:
-                                                    snapshot.data[index].body),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      width: 200,
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: Color(0xffefefef)),
-                                      child: Center(
-                                        child: Text(
-                                          snapshot.data[index].title,
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black54),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 175,
-                                  right: 10,
-                                  child: Container(
-                                    height: 50,
-                                    width: 50,
-                                    decoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                              blurRadius: 0,
-                                              color: Colors.blueGrey)
-                                        ],
-                                        shape: BoxShape.circle,
-                                        color: Colors.white),
-                                    child: Icon(
-                                      Icons.bookmark_border,
-                                      size: 25,
-                                      color: Colors.orange.shade400,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ],
-            );
+            return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext ctx, int index) {
+                  return Padding(
+                    padding:
+                        const EdgeInsets.only(top: 10.0, left: 10.0, right: 10),
+                    child: _getSingleInformationItem(
+                        snapshot.data[index], context),
+                  );
+                });
           }
           break;
         default:
